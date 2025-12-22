@@ -1,6 +1,6 @@
 from flask import Flask, request
-from whatsappbot.sett import *
-from whatsappbot.services import *
+from .sett import *
+from .services import *
 
 app = Flask(__name__)
 
