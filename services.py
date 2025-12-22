@@ -3,7 +3,7 @@ import json
 import time
 
 from num2ltr import numberToLetters, _functions
-from .sett import *
+from sett import *
 
 def obtener_Mensaje_whatsapp(message):
     typeMessage = message['type']
