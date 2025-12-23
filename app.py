@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 import sett
 from services import *
 
@@ -11,11 +11,12 @@ def welcome():
 @app.route('/webhook', methods=['GET']) # type: ignore
 def verify_token():
     try:
+        mode = request.args.get('hub.mode')
         token = request.args.get('hub.verify_token')
         challenge = request.args.get('hub.challenge')
 
-        if token == sett.token and challenge != None:
-            return challenge
+        if token == sett.token and challenge != None and mode == 'subscribe':
+            return Response(str(challenge), mimetype="text/plain")
         else:
             return 'token incorrecto', 403
     except Exception as e:
