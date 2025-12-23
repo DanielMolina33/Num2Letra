@@ -1,9 +1,10 @@
 import requests
 import json
 import time
+import re
 
+from sett import *
 from num2ltr import numberToLetters, _functions
-from .sett import *
 
 def obtener_Mensaje_whatsapp(message):
     typeMessage = message['type']
@@ -241,7 +242,7 @@ def administrar_chatbot(text, number, messageId, messageType):
     isInteractive = messageType == 'interactive'
     isnumeric = str.isnumeric(content)
     invalidsize = isnumeric and len(content) > 15
-    isdecimal = isnumeric and str.__contains__(content, '.')
+    isdecimal = re.search("^\\d+\\.\\d+$", content)
 
     print("user says: ", content)
 
@@ -269,7 +270,7 @@ def administrar_chatbot(text, number, messageId, messageType):
         list.extend(result)
 
     elif isdecimal:
-        result = warning_message(number, "Aún no puedo procesar números con punto decimal o con potencias", "Escribe otro número 😅")
+        result = warning_message(number, "Aún no puedo procesar números con punto decimal", "Escribe otro número 😅")
         list.extend(result)
 
     elif isnumeric:
