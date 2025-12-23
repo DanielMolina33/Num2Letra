@@ -8,7 +8,7 @@ app = Flask(__name__)
 def welcome():
     return 'Hola, desde Flask'
 
-@app.route('/webhook', methods=['GET']) # type: ignore
+@app.route('/webhooks', methods=['GET']) # type: ignore
 def verify_token():
     try:
         mode = request.args.get('hub.mode')
