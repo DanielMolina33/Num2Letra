@@ -19,7 +19,7 @@ def verify_token():
         else:
             return 'token incorrecto', 403
     except Exception as e:
-        return e, 403
+        return str(e), 403
     
 @app.route('/webhook', methods=['POST'])
 def get_mensajes():
