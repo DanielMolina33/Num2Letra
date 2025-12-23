@@ -3,7 +3,7 @@ import json
 import time
 
 from num2ltr import numberToLetters, _functions
-from sett import *
+from .sett import *
 
 def obtener_Mensaje_whatsapp(message):
     typeMessage = message['type']
@@ -229,12 +229,6 @@ def warning_message(number, warning, tryAgain):
     return list
 
 def administrar_chatbot(text, number, messageId, messageType):
-    # Validations
-    isInteractive = messageType == 'interactive'
-    isnumeric = str.isnumeric(text)
-    invalidsize = isnumeric and len(text) > 15
-    isdecimal = isnumeric and str.__contains__(text, '.')
-
     # Flow variables
     list = []
     content = text['content'].lower() # Mesage from user
@@ -242,6 +236,12 @@ def administrar_chatbot(text, number, messageId, messageType):
     markRead = markRead_Message(messageId)
     list.append(markRead)
     time.sleep(2)
+
+    # Validations
+    isInteractive = messageType == 'interactive'
+    isnumeric = str.isnumeric(content)
+    invalidsize = isnumeric and len(content) > 15
+    isdecimal = isnumeric and str.__contains__(content, '.')
 
     print("user says: ", content)
 
