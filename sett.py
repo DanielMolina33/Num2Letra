@@ -2,7 +2,7 @@ import os
 
 token = 'whatsappbotnum2letra'
 whatsapp_token = os.environ['WPP_TOKEN']
-whatsapp_url = 'https://graph.facebook.com/v22.0/844939012046578/messages'
+whatsapp_url = 'https://graph.facebook.com/v22.0/980071391848023/messages'
 
 stickers = {
     "poyo_feliz": 984778742532668,
