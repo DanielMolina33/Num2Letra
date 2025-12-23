@@ -16,13 +16,14 @@ def verify_token():
         challenge = request.args.get('hub.challenge')
 
         if token == sett.token and challenge != None and mode == 'subscribe':
+            print("Route responds: ", str(challenge))
             return Response(str(challenge), mimetype="text/plain")
         else:
             return 'token incorrecto', 403
     except Exception as e:
         return str(e), 403
     
-@app.route('/webhook', methods=['POST'])
+@app.route('/webhooks', methods=['POST'])
 def get_mensajes():
     try:
         body = request.get_json()
