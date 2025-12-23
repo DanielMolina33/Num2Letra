@@ -1,5 +1,5 @@
 from flask import Flask, request
-from sett import *
+import sett
 from services import *
 
 app = Flask(__name__)
