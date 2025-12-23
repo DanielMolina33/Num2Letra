@@ -229,17 +229,21 @@ def warning_message(number, warning, tryAgain):
     return list
 
 def administrar_chatbot(text, number, messageId, messageType):
-    list = []
-    print(text)
-    content = text['content'].lower() # mensaje que envió el usuario
-    meta = "" # Store metadata coming from interactive messages
-    isInteractive = messageType == "interactive"
-    
-    print("mensaje del usuario: ", content)
+    # Validations
+    isInteractive = messageType == 'interactive'
+    isnumeric = str.isnumeric(text)
+    invalidsize = isnumeric and len(text) > 15
+    isdecimal = isnumeric and str.__contains__(text, '.')
 
+    # Flow variables
+    list = []
+    content = text['content'].lower() # Mesage from user
+    meta = "" # Store metadata coming from interactive messages
     markRead = markRead_Message(messageId)
     list.append(markRead)
     time.sleep(2)
+
+    print("user says: ", content)
 
     if isInteractive:
         meta = text['metadata'].split("_")[0]
@@ -260,18 +264,24 @@ def administrar_chatbot(text, number, messageId, messageType):
         msg = text_Message(number, numToLetters.capitalize())
         list.append(msg)
         
-    elif str.isnumeric(content) and len(content) > 15:
-        list = warning_message(number, "Ups! 🫣 Solo puedo procesar números hasta de 15 cifras", "Escribe otro número")
+    elif invalidsize:
+        result = warning_message(number, "Ups! 🫣 Solo puedo procesar números hasta de 15 cifras", "Escribe otro número 😅")
+        list.extend(result)
 
-    elif str.__contains__(content, '.') or str.__contains__(content, 'e'):
-        list = warning_message(number, "Aún no puedo procesar números con punto decimal o con potencias", "Escribe otro número")
+    elif isdecimal:
+        result = warning_message(number, "Aún no puedo procesar números con punto decimal o con potencias", "Escribe otro número 😅")
+        list.extend(result)
 
-    elif str.isnumeric(content):
+    elif isnumeric:
         options = ["Si", "No"]
-        body = "¿Te gustaría la respuesta en mayusculas?"
+        msg = "¿Te gustaría la respuesta en mayusculas?"
         footer = "Tu número es: " + _functions._joinByGroups(content)
-        buttonReplyData = buttonReply_Message(number, options, body, footer, content, messageId)
+        buttonReplyData = buttonReply_Message(number, options, msg, footer, content, messageId)
         list.append(buttonReplyData)
+
+    else:
+        result = warning_message(number, "Lo siento, no entendí lo que dijiste", "Escribe otro número 😅")
+        list.extend(result)
         
     for item in list:
         enviar_Mensaje_whatsapp(item)
