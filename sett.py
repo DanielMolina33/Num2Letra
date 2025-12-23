@@ -1,6 +1,6 @@
 import os
 
-token = 'Num2Letra'
+token = 'whatsappbotnum2letra'
 whatsapp_token = os.environ['WPP_TOKEN']
 whatsapp_url = 'https://graph.facebook.com/v22.0/844939012046578/messages'
 
