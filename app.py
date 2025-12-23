@@ -14,7 +14,7 @@ def verify_token():
         token = request.args.get('hub.verify_token')
         challenge = request.args.get('hub.challenge')
 
-        if token == token and challenge != None:
+        if token == sett.token and challenge != None:
             return challenge
         else:
             return 'token incorrecto', 403
