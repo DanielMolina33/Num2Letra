@@ -1,6 +1,6 @@
 from flask import Flask, request, Response
 import sett
-from services import *
+import services
 
 app = Flask(__name__)
 
@@ -36,9 +36,9 @@ def get_mensajes():
         contacts = value['contacts'][0]
         name = contacts['profile']['name']
         messageType = message['type']
-        text = obtener_Mensaje_whatsapp(message)
+        text = services.obtener_Mensaje_whatsapp(message)
 
-        administrar_chatbot(text, number, messageId, messageType)
+        services.administrar_chatbot(text, number, messageId, messageType)
         return 'enviado'
 
     except Exception as e:

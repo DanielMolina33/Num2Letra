@@ -3,8 +3,8 @@ import json
 import time
 import re
 
-from sett import *
-from num2ltr import numberToLetters, _functions
+import sett
+from num2ltr import number_to_letters, _constants
 
 def obtener_Mensaje_whatsapp(message):
     typeMessage = message['type']
@@ -39,9 +39,9 @@ def obtener_Mensaje_whatsapp(message):
 
 def enviar_Mensaje_whatsapp(data):
     try:
-        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + whatsapp_token}
+        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sett.whatsapp_token}
         print("se envia ", data)
-        response = requests.post(whatsapp_url, headers=headers, data=data)
+        response = requests.post(sett.whatsapp_url, headers=headers, data=data)
         
         if response.status_code == 200:
             return 'mensaje enviado', 200
@@ -172,7 +172,7 @@ def sticker_Message(number, sticker_id):
 def get_media_id(media_name , media_type):
     media_id = ""
     if media_type == "sticker":
-        media_id = stickers.get(media_name, None)
+        media_id = sett.stickers.get(media_name, None)
     #elif media_type == "image":
     #    media_id = images.get(media_name, None)
     #elif media_type == "video":
@@ -221,68 +221,76 @@ def markRead_Message(messageId):
     )
     return data
 
-def warning_message(number, warning, tryAgain):
+def concat_messages(number, msg1, msg2):
     list = []
 
-    list.append(text_Message(number, warning))
-    list.append(text_Message(number, tryAgain))
+    list.append(text_Message(number, msg1))
+    list.append(text_Message(number, msg2))
 
     return list
 
 def administrar_chatbot(text, number, messageId, messageType):
     # Flow variables
     list = []
-    content = text['content'].lower() # Mesage from user
-    meta = "" # Store metadata coming from interactive messages
+    content = text['content'].strip().lower() # Mesage from user
+    # meta = "" # Get metadata coming from interactive messages
+
+    convert = False # When valid number is detected
+    numberToParse = "" # Valid number
+    case = "" # Whether the bot uses upper or lower case
+
+    invalidsize = None
     markRead = markRead_Message(messageId)
     list.append(markRead)
     time.sleep(2)
 
-    # Validations
-    isInteractive = messageType == 'interactive'
-    isnumeric = str.isnumeric(content)
-    invalidsize = isnumeric and len(content) > 15
-    isdecimal = re.search("^\\d+\\.\\d+$", content)
-
     print("user says: ", content)
 
-    if isInteractive:
-        meta = text['metadata'].split("_")[0]
+    # When number and/or mayus flag is detected
+    match = re.match(r'^(\d+)(?:\s*([a-zA-Z]))?$', content) 
+    if match:
+        numberToParse = match.group(1)
+        case = match.group(2)
+        convert = True
+        invalidsize = len(numberToParse) > _constants.maxNumberLen
+
+    # Validations
+    isdecimal = re.search("^\\d+\\.\\d+$", content)
 
     if content == "hola":
-        msg = text_Message(number, "¡Hola! 👋 Bienvenido a Num2Letra. ¿Qué números quieres convertir hoy?")
+        msg = text_Message(number, "¡Hola! 👋 Bienvenido a Num2Letra.\n\n"
+            "Soy un mini-bot cuyo objetivo es convertir números de hasta "
+            + str(_constants.maxNumberLen) + " cifras en palabras.\n"
+            "Escribe cualquier número y verás el resultado.\n\n"
+            "Puedes usar *m* después del número para mayúsculas, ej: 33m ó 33 m\n\n"
+            "Para empezar de nuevo, escribe *hola*."
+        )
         list.append(msg)
 
-    # Parse to upper case
-    elif "si" in content and isInteractive:
-        numToLetters = numberToLetters(meta)
-        msg = text_Message(number, numToLetters.upper())
-        list.append(msg)
-    
-    # Capitalize number
-    elif "no" in content and isInteractive:
-        numToLetters = numberToLetters(meta)
-        msg = text_Message(number, numToLetters.capitalize())
-        list.append(msg)
+    # Parse number
+    elif convert and not invalidsize:
+        strNumber = number_to_letters(numberToParse)
+        strNumber = strNumber.upper() if case == 'm' else strNumber.capitalize()
+
+        result = concat_messages(number, strNumber, "Puedes enviar otro número cuando quieras 😊")
+        list.extend(result)
         
     elif invalidsize:
-        result = warning_message(number, "Ups! 🫣 Solo puedo procesar números hasta de 15 cifras", "Escribe otro número 😅")
-        list.extend(result)
+        msg = text_Message(
+            number, 
+            "Ups! 🫣 Solo puedo procesar números hasta de "
+            + str(_constants.maxNumberLen) + " cifras \n"
+            "Escribe otro número 😅"
+        )
+        list.append(msg)
 
     elif isdecimal:
-        result = warning_message(number, "Aún no puedo procesar números con punto decimal", "Escribe otro número 😅")
-        list.extend(result)
-
-    elif isnumeric:
-        options = ["Si", "No"]
-        msg = "¿Te gustaría la respuesta en mayusculas?"
-        footer = "Tu número es: " + _functions._joinByGroups(content)
-        buttonReplyData = buttonReply_Message(number, options, msg, footer, content, messageId)
-        list.append(buttonReplyData)
+        msg = text_Message(number, "Aún no puedo procesar números con punto decimal\nEscribe otro número 😅")
+        list.append(msg)
 
     else:
-        result = warning_message(number, "Lo siento, no entendí lo que dijiste", "Escribe otro número 😅")
-        list.extend(result)
+        msg = text_Message(number, "Lo siento, no entendí lo que dijiste\nEscribe otro número 😅")
+        list.append(msg)
         
     for item in list:
         enviar_Mensaje_whatsapp(item)
