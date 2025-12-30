@@ -31,14 +31,11 @@ def get_mensajes():
         changes = entry['changes'][0]
         value = changes['value']
         message = value['messages'][0]
-        number = message['from']
+        phone_number = message['from']
         messageId = message['id']
-        contacts = value['contacts'][0]
-        name = contacts['profile']['name']
-        messageType = message['type']
         text = services.obtener_Mensaje_whatsapp(message)
 
-        services.administrar_chatbot(text, number, messageId, messageType)
+        services.administrar_chatbot(text, phone_number, messageId)
         return 'enviado'
 
     except Exception as e:

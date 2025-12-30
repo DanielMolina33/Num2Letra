@@ -20,8 +20,6 @@ git clone https://github.com/JPierr3/bigdateros-whatsappbot-python.git
 - Reaccionar con emojis los mensajes del usuario
 - Enviar documentos pdf
 
-
-
 ## Para probarlo localmente
 
 1. Dirigete al directorio donde descargaste el proyecto
