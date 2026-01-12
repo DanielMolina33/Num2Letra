@@ -1,63 +1,83 @@
+# num2ltr Whatsapp bot
 
-# Whatsapp Bot con Python
+num2ltr Whatsapp bot is a simple automation for converting numbers to words.
 
-Impulsa tu negocio con un bot usando las apis oficiales de whatsapp.
-pueden ver el video paso a paso en el siguiente enlace: https://youtu.be/puYWiZDJnL0
+It uses num2ltr python package v1.0.
 
-## Descarga el proyecto
+This project is under **testing**, so you may experience inconsistencies.
 
+This is a personal project intended for financial use.
+
+## Features
+- Send text messages
+- Send responses using upper or lower case
+- Mark messages as "seen"
+- Convert numbers to letters up to 15 digits (for now)
+
+## Limitations
+- No decimal support yet
+- No negative numbers
+- No scientific notation
+
+## How to try it?
+
+1. Go to downloaded location
 
 ```bash
-git clone https://github.com/JPierr3/bigdateros-whatsappbot-python.git
+  cd whatsappbot
 ```
-    
-## Funcionalidades
-
-- Enviar mensaje de texto
-- Enviar menus como botones o listas
-- Enviar stickers
-- Marcar los mensajes como "visto" (doble check azul)
-- Reaccionar con emojis los mensajes del usuario
-- Enviar documentos pdf
-
-## Para probarlo localmente
-
-1. Dirigete al directorio donde descargaste el proyecto
-
-```bash
-  cd bigdateros-whatsappbot-python
-```
-2. Crea un ambiente virtual con la version de python 3.10
+2. Create a virtual environment using python 3.10+
 
 ```bash
   virtualenv -p 3.10.11 .venv
 ```
-3. Activa el ambiente virtual
+3. Activate the virtual environment
 
+Linux / macOS:
 ```bash
-  source .venv/bin/activate
+source .venv/bin/activate
 ```
-4. Instala las dependencias
+
+Windows:
+```cmd
+  .venv\Scripts\activate
+```
+4. Install dependencies
 
 ```bash
   pip install -r requirements.txt
 ```
 
-5. Corre el aplicativo
+5. Get your Whatsapp token from Meta
 
+Linux / macOS:
 ```bash
-  python app.py
+  export WPP_TOKEN=your_token_here
 ```
 
+Windows (CMD):
+```cmd
+  set WPP_TOKEN=your_token_here
+```
 
-## Simular mensajes del usuario con postman
+PowerShell:
+```powershell
+  $env:WPP_TOKEN="your_token_here"
+```
+
+6. Run the app
+
+```bash
+  py -m app
+```
+
+## Simulate user messages using postman
 
 ```javascript
-Ingresar la URL
-http://127.0.0.1:5000/webhook
+URL
+http://127.0.0.1:5000/webhooks
 
-
-en body, seleccionar "raw" y tipo "JSON", no olvidar agregar tu número
+select "raw" body and "JSON" type, DO NOT FORGET TO ADD YOUR NUMBER
 {
   "object": "whatsapp_business_account",
   "entry": [{
@@ -76,7 +96,7 @@ en body, seleccionar "raw" y tipo "JSON", no olvidar agregar tu número
                   "wa_id": "PHONE_NUMBER"
                 }],
               "messages": [{
-                  "from": "agrega tu numero",
+                  "from": "YOUR NUMBER HERE",
                   "id": "wamid.ID",
                   "timestamp": "TIMESTAMP",
                   "text": {
@@ -91,3 +111,6 @@ en body, seleccionar "raw" y tipo "JSON", no olvidar agregar tu número
 }
 ```
 
+This project is a fork and adaptation from https://github.com/JPierr3/bigdateros-whatsappbot-python
+
+All credits to JPierr3 from bigdateros
