@@ -48,21 +48,24 @@ Windows:
   pip install -r requirements.txt
 ```
 
-5. Get your Whatsapp token from Meta
+5. Get your Whatsapp token from Meta. And create your own verification token
 
 Linux / macOS:
 ```bash
-  export WPP_TOKEN=your_token_here
+  export VERIFY_TOKEN=your_verify_token_here
+  export WPP_TOKEN=your_whatsapp_token_here
 ```
 
 Windows (CMD):
 ```cmd
-  set WPP_TOKEN=your_token_here
+  set VERIFY_TOKEN=your_verify_token_here
+  set WPP_TOKEN=your_whatsapp_token_here
 ```
 
 PowerShell:
 ```powershell
-  $env:WPP_TOKEN="your_token_here"
+  $env:VERIFY_TOKEN="your_verify_token_here"
+  $env:WPP_TOKEN="your_whatsapp_token_here"
 ```
 
 6. Run the app
